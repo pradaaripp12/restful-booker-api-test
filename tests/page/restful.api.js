@@ -9,6 +9,7 @@ const RestfulAPI = {
     getBookingById: (id) => AuthBaseAPI.get(`/booking/${id}`),
     getBookingByName : (firstName, lastName) => AuthBaseAPI.get( `/booking?firstname=${firstName}&lastname=${lastName}`),
     updateBooking : (id, newData) => AuthBaseAPI.put(`/booking/${id}`, newData),
+    partialUpdateBooking : (id, partialData) => AuthBaseAPI.patch(`/booking/${id}`, partialData),
     updateBookingWithoutAuth : (id, newData) => BaseAPI.put(`/booking/${id}`, newData),
     deleteBooking: (id) => AuthBaseAPI.delete(`/booking/${id}`)
 

@@ -106,7 +106,7 @@ describe("Booking", () => {
     })
 
     /*
-    Update booking data by id, in this scenario we use update on total price and checkout
+    Full Update booking data by id
     */
     it('Update booking data by id', async () => {
         const response = await RestfulAPI.updateBooking(bookingId, book.UPDATE_BOOKING);
@@ -124,6 +124,24 @@ describe("Booking", () => {
         assert.equal(response.data.bookingdates.checkout, book.UPDATE_BOOKING.bookingdates.checkout)
     })
 
+    /*
+    Partial Update booking data by id
+    */
+    it('Partial Update booking data by id', async () => {
+        const response = await RestfulAPI.partialUpdateBooking(bookingId, book.PARTIAL_UPDATE_BOOKING);
+        assert.equal(response.status, 200)
+        assert.isObject(response.data);
+        assert.containsAllKeys(response.data, [
+            "firstname",
+            "lastname",
+            "totalprice",
+            "depositpaid",
+            "bookingdates",
+            "additionalneeds"
+        ]);
+        assert.equal(response.data.firstname, book.PARTIAL_UPDATE_BOOKING.firstname)
+        assert.equal(response.data.lastname, book.PARTIAL_UPDATE_BOOKING.lastname)
+    })
     /*
     Update booking data by id without authorization token, in this scenario we use update on total price and checkout
     */

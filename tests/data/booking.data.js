@@ -21,6 +21,12 @@ export const UPDATE_BOOKING = {
     },
     "additionalneeds": "Breakfast"
 }
+
+export const PARTIAL_UPDATE_BOOKING = {
+    "firstname": "Prada",
+    "lastname": "Ari Pangestu",
+}
+
 export const FILTER_BOOKING = {
     "firstname": "Prada",
     "lastname": "Ari",
