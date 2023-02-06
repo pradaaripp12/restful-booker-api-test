@@ -1,4 +1,4 @@
-export const CREATE_BOOKING = {
+export const VALID_BOOKING_DATA = {
     "firstname": "Prada",
     "lastname": "Ari",
     "totalprice": 150,
@@ -9,6 +9,7 @@ export const CREATE_BOOKING = {
     },
     "additionalneeds": "Breakfast"
 }
+
 
 export const UPDATE_BOOKING = {
     "firstname": "Prada",
@@ -27,14 +28,15 @@ export const PARTIAL_UPDATE_BOOKING = {
     "lastname": "Ari Pangestu",
 }
 
-export const FILTER_BOOKING = {
+export const FILTER_BOOKING_PARAMS = {
     "firstname": "Prada",
     "lastname": "Ari",
-    "totalprice": 150,
-    "depositpaid": true,
     "bookingdates": {
         "checkin": "2023-02-03",
         "checkout": "2023-02-05"
     },
-    "additionalneeds": "Breakfast"
+}
+
+export const FILTER_BY_FIRSTNAME = {
+    "firstname" : "Prada"
 }
