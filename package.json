@@ -17,8 +17,8 @@
   "type": "module",
   "scripts": {
     "postinstall": "link-module-alias",
-    "preinstall": "link-module-alias && link-module-alias clean || true",    
-    "mocha:run": "mocha tests/scenario --reporter-option reportDir=reports --timeout=10000"
+    "preinstall": "link-module-alias && link-module-alias clean || true",
+    "mocha:test": "mocha tests/scenario --reporter-option reportDir=reports --timeout=10000"
   },
   "_moduleAliases": {
     "$root": "tests",

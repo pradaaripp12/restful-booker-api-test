@@ -18,15 +18,15 @@ const AuthBaseApi = axios.create({
 });
 
 AuthBaseApi.interceptors.request.use(async function (config) {
-        // Do something before request is sent
         const createToken = await RestfulAPI.createToken(data.VALID_DATA)
         config.headers.Cookie = `token=${createToken.data.token}`
         return config;
     },
     function (error) {
-        // Do something with request error
+
         return Promise.reject(error);
     });
+
 
 
 export default AuthBaseApi;
