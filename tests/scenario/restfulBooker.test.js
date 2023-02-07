@@ -150,15 +150,15 @@ describe("Booking", () => {
     });
 
     describe("Get Booking Using Filter", () => {
+        const filterList = book.FILTER_BOOKING_PARAMS;
         describe("Positive Case", () => {
             it("Get list booking using filter by firstname", async () => {
-                // const firstName = getParams(book.FILTER_BOOKING_PARAMS["firstname"])
-                // console.log(firstName)
-                const params = {
-                    "firstname": book.FILTER_BOOKING_PARAMS.firstname
-                };
-                // console.log(params)
-                // console.log(book.FILTER_BOOKING_PARAMS)
+                const params = (({
+                    firstname
+                }) => ({
+                    firstname
+                }))(filterList)
+
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
@@ -166,88 +166,79 @@ describe("Booking", () => {
             });
 
             it("Get list booking using filter by lastname", async () => {
-                // const firstName = getParams(book.FILTER_BOOKING_PARAMS["firstname"])
-                // console.log(firstName)
-                const params = {
-                    "lastname": book.FILTER_BOOKING_PARAMS.lastname
-                };
-                // console.log(params)
-                // console.log(book.FILTER_BOOKING_PARAMS)
+                const params = (({
+                    lastname
+                }) => ({
+                    lastname
+                }))(filterList)
+
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });
 
             it("Get list booking using filter by bookingdates", async () => {
-                // const firstName = getParams(book.FILTER_BOOKING_PARAMS["firstname"])
-                // console.log(firstName)
-                const params = {
-                    "checkin": book.FILTER_BOOKING_PARAMS.bookingdates.checkin,
-                    "checkout": book.FILTER_BOOKING_PARAMS.bookingdates.checkout
-                };
-                // console.log(params)
-                // console.log(book.FILTER_BOOKING_PARAMS)
+                const params = (({
+                    checkin,
+                    checkout
+                }) => ({
+                    checkin,
+                    checkout
+                }))(filterList)
+
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });
 
             it("Get list booking using filter by firstname and lastname", async () => {
-                // const firstName = getParams(book.FILTER_BOOKING_PARAMS["firstname"])
-                // console.log(firstName)
-                const params = {
-                    "firstname": book.FILTER_BOOKING_PARAMS.firstname,
-                    "lastname": book.FILTER_BOOKING_PARAMS.lastname
-                };
-                // console.log(params)
-                // console.log(book.FILTER_BOOKING_PARAMS)
+                const params = (({
+                    firstname,
+                    lastname
+                }) => ({
+                    firstname,
+                    lastname
+                }))(filterList)
+
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });
 
             it("Get list booking using filter by firstname and bookingdates", async () => {
-                // const firstName = getParams(book.FILTER_BOOKING_PARAMS["firstname"])
-                // console.log(firstName)
-                const params = {
-                    "firstname": book.FILTER_BOOKING_PARAMS.firstname,
-                    "checkin": book.FILTER_BOOKING_PARAMS.bookingdates.checkin,
-                    "checkout": book.FILTER_BOOKING_PARAMS.bookingdates.checkout
-                };
-                // console.log(params)
-                // console.log(book.FILTER_BOOKING_PARAMS)
+                const params = (({
+                    firstname,
+                    checkin,
+                    checkout
+                }) => ({
+                    firstname,
+                    checkin,
+                    checkout
+                }))(filterList)
+
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });
 
             it("Get list booking using filter by lastname and bookingdates", async () => {
-                // const firstName = getParams(book.FILTER_BOOKING_PARAMS["firstname"])
-                // console.log(firstName)
-                const params = {
-                    "lastname": book.FILTER_BOOKING_PARAMS.lastname,
-                    "checkin": book.FILTER_BOOKING_PARAMS.bookingdates.checkin,
-                    "checkout": book.FILTER_BOOKING_PARAMS.bookingdates.checkout
-                };
-                // console.log(params)
-                // console.log(book.FILTER_BOOKING_PARAMS)
+                const params = (({
+                    lastname,
+                    checkin,
+                    checkout
+                }) => ({
+                    lastname,
+                    checkin,
+                    checkout
+                }))(filterList)
+
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });
 
             it("Get list booking using filter by firstname, lastname, and bookingdates", async () => {
-                // const firstName = getParams(book.FILTER_BOOKING_PARAMS["firstname"])
-                // console.log(firstName)
-                const params = {
-                    "firstname": book.FILTER_BOOKING_PARAMS.firstname,
-                    "lastname": book.FILTER_BOOKING_PARAMS.lastname,
-                    "checkin": book.FILTER_BOOKING_PARAMS.bookingdates.checkin,
-                    "checkout": book.FILTER_BOOKING_PARAMS.bookingdates.checkout
-                };
-                // console.log(params)
-                // console.log(book.FILTER_BOOKING_PARAMS)
-                const response = await RestfulAPI.getBookingFilter(params)
+                const response = await RestfulAPI.getBookingFilter(filterList)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });

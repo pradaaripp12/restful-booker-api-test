@@ -29,14 +29,12 @@ export const PARTIAL_UPDATE_BOOKING = {
 }
 
 export const FILTER_BOOKING_PARAMS = {
-    "firstname": "Prada",
-    "lastname": "Ari",
-    "bookingdates": {
-        "checkin": "2023-02-03",
-        "checkout": "2023-02-05"
-    },
+    firstname: "Prada",
+    lastname: "Ari",
+    checkin: "2023-02-03",
+    checkout: "2023-02-05"
 }
 
 export const FILTER_BY_FIRSTNAME = {
-    "firstname" : "Prada"
+    "firstname": "Prada"
 }
