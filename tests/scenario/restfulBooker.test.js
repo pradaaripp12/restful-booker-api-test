@@ -238,15 +238,131 @@ describe("Booking", () => {
             });
 
             it("Get list booking using filter by firstname, lastname, and bookingdates", async () => {
-                const response = await RestfulAPI.getBookingFilter(filterList)
+                const params = (({
+                    firstname,
+                    lastname,
+                    checkin,
+                    checkout
+                }) => ({
+                    firstname,
+                    lastname,
+                    checkin,
+                    checkout
+                }))(filterList)
+                const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });
         });
 
         describe("Negative Case", () => {
+            const filterWrongList = book.BOOKING_WRONG_PARAMS
+            const filterWrongNameList = book.BOOKING_WRONG_NAME_PARAMS
+            const filterWrongDateList = book.BOOKING_WRONG_DATE_PARAMS
+            it('Get list ordering using wrong firstName filter', async () => {
+                const params = (({
+                    firstname
+                }) => ({
+                    firstname
+                }))(filterWrongList)
 
-        })
+                const response = await RestfulAPI.getBookingFilter(params)
+                assert.equal(response.status, 200);
+                assert.isArray(response.data);
+            });
+
+            it('Get list ordering using wrong lastName filter', async() => {
+                const params = (({
+                    lastname
+                }) => ({
+                    lastname
+                }))(filterWrongList)
+
+                const response = await RestfulAPI.getBookingFilter(params)
+                assert.equal(response.status, 200);
+                assert.isArray(response.data);
+            });
+
+            it("Get list booking using wrong checkin filter ", async () => {
+                const params = (({
+                    checkin
+                }) => ({
+                    checkin
+                }))(filterWrongList)
+
+                const response = await RestfulAPI.getBookingFilter(params)
+                assert.equal(response.status, 200);
+                assert.isArray(response.data);
+            });
+
+            it("Get list booking without using filter by checkout", async () => {
+                const params = (({
+                    checkout
+                }) => ({
+                    checkout
+                }))(filterWrongList)
+
+                const response = await RestfulAPI.getBookingFilter(params)
+                assert.equal(response.status, 200);
+                assert.isArray(response.data);
+            });
+
+            it("Get list booking using wrong firstname and lastname filter ", async () => {
+                const params = (({
+                    firstname,
+                    lastname,
+                    checkin,
+                    checkout
+                }) => ({
+                    firstname,
+                    lastname,
+                    checkin,
+                    checkout
+                }))(filterWrongNameList)
+
+                const response = await RestfulAPI.getBookingFilter(params)
+                assert.equal(response.status, 200);
+                assert.isArray(response.data);
+            });
+
+
+
+            it("Get list booking using wrong booking dates filter ", async () => {
+                const params = (({
+                    firstname,
+                    lastname,
+                    checkin,
+                    checkout
+                }) => ({
+                    firstname,
+                    lastname,
+                    checkin,
+                    checkout
+                }))(filterWrongDateList)
+
+                const response = await RestfulAPI.getBookingFilter(null)
+                assert.equal(response.status, 200);
+                assert.isArray(response.data);
+            });
+
+            it("Get list booking without using filter by firstname, lastname, and bookingdates", async () => {
+                const params = (({
+                }) => ({
+                }))(filterList)
+                const response = await RestfulAPI.getBookingFilter(params)
+                assert.equal(response.status, 200);
+                assert.isArray(response.data, "No Content");
+            });
+
+        });
+
+
+
+
+
+
+
+
     })
 
     // it("Create booking with valid data", async () => {

@@ -38,3 +38,28 @@ export const FILTER_BOOKING_PARAMS = {
 export const FILTER_BY_FIRSTNAME = {
     "firstname": "Prada"
 }
+
+export const FILTER_WITHOUT_BY_FIRSTNAME = {
+    "firstname": ""
+}
+
+export const BOOKING_WRONG_PARAMS = {
+    firstname: 11223,
+    lastname: 343434,
+    checkin: 6.7,
+    checkout: 5
+}
+
+export const BOOKING_WRONG_NAME_PARAMS = {
+    firstname: 4.8,
+    lastname: true,
+    checkin: "2023-02-03",
+    checkout: "2023-02-05"
+}
+
+export const BOOKING_WRONG_DATE_PARAMS = {
+    firstname: "Prada",
+    lastname: "Ari",
+    checkin: true,
+    checkout: 5.0
+}
