@@ -24,8 +24,13 @@ export const UPDATE_BOOKING = {
 }
 
 export const PARTIAL_UPDATE_BOOKING = {
-    "firstname": "Prada",
+    "firstname": "Fathah",
     "lastname": "Ari Pangestu",
+    "totalprice": 1000,
+    "depositpaid": false,
+    "checkin": "2023-02-02",
+    "checkout": "2025-02-08",
+    "additionalneeds": "Breakfast"
 }
 
 export const FILTER_BOOKING_PARAMS = {
@@ -33,6 +38,13 @@ export const FILTER_BOOKING_PARAMS = {
     lastname: "Ari",
     checkin: "2023-02-03",
     checkout: "2023-02-05"
+}
+
+export const FILTER_BOOKING_WRONGS_DATA = {
+    firstname: "Subhan",
+    lastname: "Ahmad",
+    checkin: "2099-02-03",
+    checkout: "2067-02-05"
 }
 
 export const FILTER_BY_FIRSTNAME = {

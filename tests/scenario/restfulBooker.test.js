@@ -10,6 +10,7 @@ import {
 
 var authToken;
 var bookingId;
+var bookingIdNew;
 
 describe("Ping API Endpoint", () => {
     it("Ping to api endpoint to make sure that server is online", async () => {
@@ -162,6 +163,7 @@ describe("Booking", () => {
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
+                assert.isNumber(response.data[0].bookingid);
 
             });
 
@@ -175,20 +177,20 @@ describe("Booking", () => {
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
+                assert.isNumber(response.data[0].bookingid);
             });
 
-            it("Get list booking using filter by bookingdates", async () => {
+            it("Get list booking using filter by checkout", async () => {
                 const params = (({
-                    checkin,
-                    checkout
+                    checkout,
                 }) => ({
-                    checkin,
-                    checkout
+                    checkout,
                 }))(filterList)
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
+                assert.isNumber(response.data[0].bookingid);
             });
 
             it("Get list booking using filter by firstname and lastname", async () => {
@@ -203,55 +205,53 @@ describe("Booking", () => {
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
+                assert.isNumber(response.data[0].bookingid);
             });
 
-            it("Get list booking using filter by firstname and bookingdates", async () => {
+            it("Get list booking using filter by firstname and checkout", async () => {
                 const params = (({
                     firstname,
-                    checkin,
-                    checkout
+                    checkout,
                 }) => ({
                     firstname,
-                    checkin,
-                    checkout
+                    checkout,
                 }))(filterList)
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
+                assert.isNumber(response.data[0].bookingid);
             });
 
-            it("Get list booking using filter by lastname and bookingdates", async () => {
+            it("Get list booking using filter by lastname and checkout", async () => {
                 const params = (({
                     lastname,
-                    checkin,
-                    checkout
+                    checkout,
                 }) => ({
                     lastname,
-                    checkin,
-                    checkout
+                    checkout,
                 }))(filterList)
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
+                assert.isNumber(response.data[0].bookingid);
             });
 
-            it("Get list booking using filter by firstname, lastname, and bookingdates", async () => {
+            it("Get list booking using filter by firstname, lastname, and checkout", async () => {
                 const params = (({
                     firstname,
                     lastname,
-                    checkin,
-                    checkout
+                    checkout,
                 }) => ({
                     firstname,
                     lastname,
-                    checkin,
-                    checkout
+                    checkout,
                 }))(filterList)
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
+                assert.isNumber(response.data[0].bookingid);
             });
         });
 
@@ -259,7 +259,7 @@ describe("Booking", () => {
             const filterWrongList = book.BOOKING_WRONG_PARAMS
             const filterWrongNameList = book.BOOKING_WRONG_NAME_PARAMS
             const filterWrongDateList = book.BOOKING_WRONG_DATE_PARAMS
-            it('Get list ordering using wrong firstName filter', async () => {
+            it('Get list booking using wrong firstname filter', async () => {
                 const params = (({
                     firstname
                 }) => ({
@@ -271,7 +271,7 @@ describe("Booking", () => {
                 assert.isArray(response.data);
             });
 
-            it('Get list ordering using wrong lastName filter', async() => {
+            it('Get list booking using wrong lastName filter', async () => {
                 const params = (({
                     lastname
                 }) => ({
@@ -283,19 +283,7 @@ describe("Booking", () => {
                 assert.isArray(response.data);
             });
 
-            it("Get list booking using wrong checkin filter ", async () => {
-                const params = (({
-                    checkin
-                }) => ({
-                    checkin
-                }))(filterWrongList)
-
-                const response = await RestfulAPI.getBookingFilter(params)
-                assert.equal(response.status, 200);
-                assert.isArray(response.data);
-            });
-
-            it("Get list booking without using filter by checkout", async () => {
+            it("Get list booking using wrong checkout filter ", async () => {
                 const params = (({
                     checkout
                 }) => ({
@@ -325,8 +313,6 @@ describe("Booking", () => {
                 assert.isArray(response.data);
             });
 
-
-
             it("Get list booking using wrong booking dates filter ", async () => {
                 const params = (({
                     firstname,
@@ -346,9 +332,7 @@ describe("Booking", () => {
             });
 
             it("Get list booking without using filter by firstname, lastname, and bookingdates", async () => {
-                const params = (({
-                }) => ({
-                }))(filterList)
+                const params = (({}) => ({}))(filterList)
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data, "No Content");
@@ -356,156 +340,256 @@ describe("Booking", () => {
 
         });
 
+    });
 
+    describe("Update Booking", () => {
+        describe("Positive Case", () => {
+            it("Update booking data with valid id", async () => {
+                const response = await RestfulAPI.updateBooking(
+                    bookingId,
+                    book.UPDATE_BOOKING
+                );
+                assert.equal(response.status, 200);
+                assert.isObject(response.data);
+                assert.containsAllKeys(response.data, [
+                    "firstname",
+                    "lastname",
+                    "totalprice",
+                    "depositpaid",
+                    "bookingdates",
+                    "additionalneeds",
+                ]);
+                assert.equal(response.data.firstname, book.UPDATE_BOOKING.firstname);
+                assert.equal(response.data.lastname, book.UPDATE_BOOKING.lastname);
+                assert.equal(response.data.depositpaid, book.UPDATE_BOOKING.depositpaid);
+                assert.equal(response.data.bookingdates.checkin, book.UPDATE_BOOKING.bookingdates.checkin);
+                assert.equal(response.data.bookingdates.checkout, book.UPDATE_BOOKING.bookingdates.checkout);
+                assert.equal(response.data.bookingdates.additionalneeds, book.UPDATE_BOOKING.bookingdates.additionalneeds);
 
+            });
+        });
 
+        describe("Negative Case", () => {
+            it("Update booking data with valid id without authorization token", async () => {
+                const response = await RestfulAPI.updateBookingWithoutAuth(
+                    bookingId,
+                    book.UPDATE_BOOKING
+                );
+                assert.equal(response.status, 403);
+                assert.equal(response.data, "Forbidden");
+            });
 
+            before(async function () {
+                // runs once after the last test in this block
+                const response = await RestfulAPI.deleteBooking(bookingId);
+                // console.log(response.data);
+            });
 
-
-
+            it("Update booking data using unregistered id ", async () => {
+                const response = await RestfulAPI.updateBooking(
+                    bookingId,
+                    book.UPDATE_BOOKING
+                );
+                assert.equal(response.status, 405);
+                assert.equal(response.data, "Method Not Allowed");
+            });
+        })
     })
 
-    // it("Create booking with valid data", async () => {
-    //     const response = await RestfulAPI.createBooking(book.CREATE_BOOKING);
-    //     // console.log(response.data)
-    //     bookingId = response.data.bookingid;
-    //     assert.equal(response.status, 200);
-    //     assert.containsAllKeys(response.data, ["bookingid", "booking"]);
-    //     assert.isNumber(response.data.bookingid);
-    //     assert.isObject(response.data.booking);
-    //     assert.equal(
-    //         response.data.booking.firstname,
-    //         book.CREATE_BOOKING.firstname
-    //     );
-    //     console.log("    ✔ Your booking id " + bookingId + "");
-    //     // assert.containsAllKeys()
-    //     // console.log(response.data)
-    // });
+    describe("Partial Update Booking", () => {
+        const partialData = book.PARTIAL_UPDATE_BOOKING;
 
-    // // Get Booking Data using Id
-    // it("Get Booking data using id", async () => {
-    //     const response = await RestfulAPI.getBookingById(bookingId);
-    //     assert.equal(response.status, 200);
-    //     assert.isObject(response.data);
-    //     assert.containsAllKeys(response.data, [
-    //         "firstname",
-    //         "lastname",
-    //         "totalprice",
-    //         "depositpaid",
-    //         "bookingdates",
-    //         "additionalneeds",
-    //     ]);
-    // });
+        before(async function () {
+            // runs once after the last test in this block
+            const response = await RestfulAPI.createBooking(book.VALID_BOOKING_DATA);
+            bookingIdNew = response.data.bookingid;
+            // console.log(response.data);
+        });
 
-    // /*
-    //   Get Booking Data Using Filter firstname and lastname
-    //   */
-    // it("Get Booking data using firstname and lastname", async () => {
-    //     const response = await RestfulAPI.getBookingByName(
-    //         book.FILTER_BOOKING.firstname,
-    //         book.FILTER_BOOKING.lastname
-    //     );
-    //     assert.equal(response.status, 200);
-    //     assert.isArray(response.data);
-    //     assert.containsAllKeys(response.data[0], ["bookingid"]);
-    //     assert.isNumber(response.data[0].bookingid);
+        describe("Positive Case", () => {
+            it("Partial Update booking data by firstname", async () => {
+                const params = (({
+                    firstname,
+                }) => ({
+                    firstname,
+                }))(partialData);
+                const response = await RestfulAPI.partialUpdateBooking(
+                    bookingIdNew,
+                    params
+                );
+                assert.equal(response.status, 200);
+                assert.isObject(response.data);
+                assert.containsAllKeys(response.data, [
+                    "firstname",
+                    "lastname",
+                    "totalprice",
+                    "depositpaid",
+                    "bookingdates",
+                    "additionalneeds",
+                ]);
+                assert.equal(
+                    response.data.firstname,
+                    book.PARTIAL_UPDATE_BOOKING.firstname
+                );
+            });
 
-    //     const searchData = await RestfulAPI.getBookingById(
-    //         response.data[0].bookingid
-    //     );
-    //     assert.equal(searchData.status, 200);
-    //     assert.isObject(searchData.data);
-    //     assert.containsAllKeys(searchData.data, [
-    //         "firstname",
-    //         "lastname",
-    //         "totalprice",
-    //         "depositpaid",
-    //         "bookingdates",
-    //         "additionalneeds",
-    //     ]);
-    //     assert.equal(searchData.data.firstname, book.FILTER_BOOKING.firstname);
-    // });
+            it("Partial Update booking data by lastname", async () => {
+                const params = (({
+                    lastname,
+                }) => ({
+                    lastname,
+                }))(partialData);
+                const response = await RestfulAPI.partialUpdateBooking(
+                    bookingIdNew,
+                    params
+                );
+                assert.equal(response.status, 200);
+                assert.isObject(response.data);
+                assert.containsAllKeys(response.data, [
+                    "firstname",
+                    "lastname",
+                    "totalprice",
+                    "depositpaid",
+                    "bookingdates",
+                    "additionalneeds",
+                ]);
+                assert.equal(
+                    response.data.lastname,
+                    book.PARTIAL_UPDATE_BOOKING.lastname
+                );
+            });
 
-    // /*
-    //   Full Update booking data by id
-    //   */
-    // it("Update booking data by id", async () => {
-    //     const response = await RestfulAPI.updateBooking(
-    //         bookingId,
-    //         book.UPDATE_BOOKING
-    //     );
-    //     assert.equal(response.status, 200);
-    //     assert.isObject(response.data);
-    //     assert.containsAllKeys(response.data, [
-    //         "firstname",
-    //         "lastname",
-    //         "totalprice",
-    //         "depositpaid",
-    //         "bookingdates",
-    //         "additionalneeds",
-    //     ]);
-    //     assert.equal(response.data.totalprice, book.UPDATE_BOOKING.totalprice);
-    //     assert.equal(
-    //         response.data.bookingdates.checkout,
-    //         book.UPDATE_BOOKING.bookingdates.checkout
-    //     );
-    // });
+            it("Partial Update booking data by totalprice", async () => {
+                const params = (({
+                    totalprice,
+                }) => ({
+                    totalprice,
+                }))(partialData);
+                const response = await RestfulAPI.partialUpdateBooking(
+                    bookingIdNew,
+                    params
+                );
+                assert.equal(response.status, 200);
+                assert.isObject(response.data);
+                assert.containsAllKeys(response.data, [
+                    "firstname",
+                    "lastname",
+                    "totalprice",
+                    "depositpaid",
+                    "bookingdates",
+                    "additionalneeds",
+                ]);
+                assert.equal(
+                    response.data.totalprice,
+                    book.PARTIAL_UPDATE_BOOKING.totalprice
+                );
+            });
+            it("Partial Update booking data by depositpaid", async () => {
+                const params = (({
+                    depositpaid,
+                }) => ({
+                    depositpaid,
+                }))(partialData);
+                const response = await RestfulAPI.partialUpdateBooking(
+                    bookingIdNew,
+                    params
+                );
+                assert.equal(response.status, 200);
+                assert.isObject(response.data);
+                assert.containsAllKeys(response.data, [
+                    "firstname",
+                    "lastname",
+                    "totalprice",
+                    "depositpaid",
+                    "bookingdates",
+                    "additionalneeds",
+                ]);
+                assert.equal(
+                    response.data.depositpaid,
+                    book.PARTIAL_UPDATE_BOOKING.depositpaid
+                );
+            });
 
-    // /*
-    //   Partial Update booking data by id
-    //   */
-    // it("Partial Update booking data by id", async () => {
-    //     const response = await RestfulAPI.partialUpdateBooking(
-    //         bookingId,
-    //         book.PARTIAL_UPDATE_BOOKING
-    //     );
-    //     assert.equal(response.status, 200);
-    //     assert.isObject(response.data);
-    //     assert.containsAllKeys(response.data, [
-    //         "firstname",
-    //         "lastname",
-    //         "totalprice",
-    //         "depositpaid",
-    //         "bookingdates",
-    //         "additionalneeds",
-    //     ]);
-    //     assert.equal(
-    //         response.data.firstname,
-    //         book.PARTIAL_UPDATE_BOOKING.firstname
-    //     );
-    //     assert.equal(response.data.lastname, book.PARTIAL_UPDATE_BOOKING.lastname);
-    // });
-    // /*
-    //   Update booking data by id without authorization token, in this scenario we use update on total price and checkout
-    //   */
-    // it("Update booking data by id without authorization token", async () => {
-    //     const response = await RestfulAPI.updateBookingWithoutAuth(
-    //         bookingId,
-    //         book.UPDATE_BOOKING
-    //     );
-    //     assert.equal(response.status, 403);
-    //     assert.equal(response.data, "Forbidden");
-    // });
+            it("Partial Update booking data by bookingdates", async () => {
+                const params = (({
+                    checkin,
+                    checkout,
+                }) => ({
+                    checkin,
+                    checkout
+                }))(partialData);
+                const response = await RestfulAPI.partialUpdateBooking(
+                    bookingIdNew, {
+                        "bookingdates": params
+                    }
+                );
+                // console.log(response.data)
+                assert.equal(response.status, 200);
+                assert.isObject(response.data);
+                assert.containsAllKeys(response.data, [
+                    "firstname",
+                    "lastname",
+                    "totalprice",
+                    "depositpaid",
+                    "bookingdates",
+                    "additionalneeds",
+                ]);
+                assert.equal(
+                    response.data.bookingdates.checkin,
+                    book.PARTIAL_UPDATE_BOOKING.checkin
+                );
+                assert.equal(
+                    response.data.bookingdates.checkout,
+                    book.PARTIAL_UPDATE_BOOKING.checkout
+                );
+            });
+        });
 
-    // /*
-    //   Delete Booking Data
-    //   */
-    // it("Delete Booking Data by ID", async () => {
-    //     const response = await RestfulAPI.deleteBooking(bookingId);
-    //     assert.equal(response.status, 201);
-    //     assert.isString(response.data);
-    //     assert.equal(response.data, "Created");
-    // });
+        describe("Negative Case", () => {
+            it("Update booking data with valid id without authorization token", async () => {
+                const response = await RestfulAPI.updateBookingWithoutAuth(
+                    bookingIdNew,
+                    book.UPDATE_BOOKING
+                );
+                assert.equal(response.status, 403);
+                assert.equal(response.data, "Forbidden");
+            });
 
-    // /*
-    //   Update booking data by id without authorization token, in this scenario we use update on total price and checkout
-    //   */
-    // it("Update booking data using unregistered id ", async () => {
-    //     const response = await RestfulAPI.updateBooking(
-    //         bookingId,
-    //         book.UPDATE_BOOKING
-    //     );
-    //     assert.equal(response.status, 405);
-    //     assert.equal(response.data, "Method Not Allowed");
-    // });
+            it("Update booking data using unregistered id ", async () => {
+                const response = await RestfulAPI.partialUpdateBooking(
+                    bookingId,
+                    book.UPDATE_BOOKING
+                );
+                assert.equal(response.status, 405);
+                assert.equal(response.data, "Method Not Allowed");
+            });
+        })
+    });
+
+    describe("Delete Booking Data", () => {
+        describe("Positive Case", () => {
+            it("Delete booking data using valid id ", async () => {
+                const response = await RestfulAPI.deleteBooking(bookingIdNew);
+                assert.equal(response.status, 201);
+                assert.isString(response.data);
+                assert.equal(response.data, "Created");
+            });
+            describe("Negative Case Case", () => {
+                it("Delete booking data with valid id without authorization token", async () => {
+                    const response = await RestfulAPI.deleteBookingWithoutAuth(
+                        bookingIdNew
+                    );
+                    assert.equal(response.status, 403);
+                    assert.equal(response.data, "Forbidden");
+                });
+                it("Delete booking data using unregistered id", async () => {
+                    const response = await RestfulAPI.deleteBooking(
+                        bookingIdNew)
+                    assert.equal(response.status, 405);
+                    assert.isString(response.data);
+                    assert.equal(response.data, "Method Not Allowed");
+                });
+            })
+        })
+    })
 });
