@@ -1,9 +1,12 @@
-import {
-    assert
+import chai, {
+    assert,
+    expect
 } from "chai";
+import jsonSchema from "chai-json-schema";
 import RestfulAPI from "$root/page/restful.api";
 import * as data from "$root/data/user.data";
 import * as book from "$root/data/booking.data";
+import * as schema from "$root/schema/data.schema";
 import {
     getParams
 } from "$root/helper/lib-api";
@@ -12,9 +15,12 @@ var authToken;
 var bookingId;
 var bookingIdNew;
 
+chai.use(jsonSchema);
+
 describe("Ping API Endpoint", () => {
     it("Ping to api endpoint to make sure that server is online", async () => {
         const response = await RestfulAPI.ping();
+
         assert.equal(response.status, 201);
         assert.isString(response.data);
         assert.equal(response.data, "Created");
@@ -26,14 +32,11 @@ describe("Create Auth Token", () => {
     describe("Positive Case", () => {
         it("Create auth token with registered data", async () => {
             const response = await RestfulAPI.createToken(data.VALID_REGISTERED);
+
             authToken = response.data.token;
-            // expect(response).to.equal('promise resolved');
-            // console.log(response);
             assert.equal(response.status, 200);
-            assert.containsAllKeys(response.data, ["token"]);
-            assert.isString(authToken);
             assert.equal(authToken.length, data.VALID_DATA_RESPONSE.token.length);
-            // console.log("    ✔ Your access token " + authToken + "")
+            expect(response.data).to.be.jsonSchema(schema.VALID_CREATE_AUTH_PARAMS);
         });
     });
 
@@ -42,33 +45,29 @@ describe("Create Auth Token", () => {
             const response = await RestfulAPI.createToken(data.VALID_USERNAME_WITH_EMPTY_PASSWORD);
 
             assert.equal(response.status, 200)
-            assert.containsAllKeys(response.data, ["reason"]);
-            assert.isString(response.data.reason);
             assert.equal(response.data.reason, data.INVALID_DATA_RESPONSE.reason);
+            expect(response.data).to.be.jsonSchema(schema.INVALID_CREATE_AUTH_PARAMS);
         });
 
         it("Create auth token with username registered and password not registered", async () => {
             const response = await RestfulAPI.createToken(data.VALID_USERNAME_WITH_INVALID_PASSWORD);
 
             assert.equal(response.status, 200)
-            assert.containsAllKeys(response.data, ["reason"]);
-            assert.isString(response.data.reason);
+            expect(response.data).to.be.jsonSchema(schema.INVALID_CREATE_AUTH_PARAMS);
             assert.equal(response.data.reason, data.INVALID_DATA_RESPONSE.reason);
         });
         it("Create auth token with username and password not registered", async () => {
             const response = await RestfulAPI.createToken(data.INVALID_USERNAME_AND_PASSWORD);
 
             assert.equal(response.status, 200)
-            assert.containsAllKeys(response.data, ["reason"]);
-            assert.isString(response.data.reason);
+            expect(response.data).to.be.jsonSchema(schema.INVALID_CREATE_AUTH_PARAMS);
             assert.equal(response.data.reason, data.INVALID_DATA_RESPONSE.reason);
         });
         it("Create auth token with username not registered and password registered", async () => {
             const response = await RestfulAPI.createToken(data.INVALID_USERNAME_WITH_VALID_PASSWORD);
 
             assert.equal(response.status, 200)
-            assert.containsAllKeys(response.data, ["reason"]);
-            assert.isString(response.data.reason);
+            expect(response.data).to.be.jsonSchema(schema.INVALID_CREATE_AUTH_PARAMS);
             assert.equal(response.data.reason, data.INVALID_DATA_RESPONSE.reason);
         });
         it("Create auth token with username not registered and password empty", async () => {
@@ -114,14 +113,7 @@ describe("Booking", () => {
             // console.log(response.data)
             bookingId = response.data.bookingid;
             assert.equal(response.status, 200);
-            assert.containsAllKeys(response.data, ["bookingid", "booking"]);
-            assert.isNumber(response.data.bookingid);
-            assert.isObject(response.data.booking);
-            assert.equal(
-                response.data.booking.firstname,
-                book.VALID_BOOKING_DATA.firstname
-            );
-            // console.log("    ✔ Your booking id " + bookingId + "");
+            expect(response.data).to.be.jsonSchema(schema.VALID_BOOKING_DATA_PARAMS);
         });
     });
 
@@ -130,15 +122,7 @@ describe("Booking", () => {
             it("Get booking with valid id ", async () => {
                 const response = await RestfulAPI.getBookingById(bookingId);
                 assert.equal(response.status, 200);
-                assert.isObject(response.data);
-                assert.containsAllKeys(response.data, [
-                    "firstname",
-                    "lastname",
-                    "totalprice",
-                    "depositpaid",
-                    "bookingdates",
-                    "additionalneeds",
-                ]);
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_ID_PARAMS);
             })
         });
         describe("Negative Case", () => {
@@ -162,9 +146,7 @@ describe("Booking", () => {
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
-                assert.isArray(response.data);
-                assert.isNumber(response.data[0].bookingid);
-
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_FILTER_PARAMS);
             });
 
             it("Get list booking using filter by lastname", async () => {
@@ -176,8 +158,7 @@ describe("Booking", () => {
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
-                assert.isArray(response.data);
-                assert.isNumber(response.data[0].bookingid);
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_FILTER_PARAMS);
             });
 
             it("Get list booking using filter by checkout", async () => {
@@ -189,8 +170,7 @@ describe("Booking", () => {
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
-                assert.isArray(response.data);
-                assert.isNumber(response.data[0].bookingid);
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_FILTER_PARAMS);
             });
 
             it("Get list booking using filter by firstname and lastname", async () => {
@@ -204,8 +184,7 @@ describe("Booking", () => {
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
-                assert.isArray(response.data);
-                assert.isNumber(response.data[0].bookingid);
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_FILTER_PARAMS);
             });
 
             it("Get list booking using filter by firstname and checkout", async () => {
@@ -219,8 +198,7 @@ describe("Booking", () => {
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
-                assert.isArray(response.data);
-                assert.isNumber(response.data[0].bookingid);
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_FILTER_PARAMS);
             });
 
             it("Get list booking using filter by lastname and checkout", async () => {
@@ -234,8 +212,7 @@ describe("Booking", () => {
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
-                assert.isArray(response.data);
-                assert.isNumber(response.data[0].bookingid);
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_FILTER_PARAMS);
             });
 
             it("Get list booking using filter by firstname, lastname, and checkout", async () => {
@@ -249,9 +226,7 @@ describe("Booking", () => {
                     checkout,
                 }))(filterList)
                 const response = await RestfulAPI.getBookingFilter(params)
-                // console.log(response)
-                assert.equal(response.status, 200);
-                assert.isNumber(response.data[0].bookingid);
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_FILTER_PARAMS);
             });
         });
 
@@ -335,7 +310,7 @@ describe("Booking", () => {
                 assert.isArray(response.data);
             });
 
-            it("Get list booking without using filter by firstname, lastname, and checkout", async () => {
+            it("Get list booking using filter wrong firstname, lastname, and checkout", async () => {
                 const params = filterWrongList;
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
@@ -354,22 +329,7 @@ describe("Booking", () => {
                     book.UPDATE_BOOKING
                 );
                 assert.equal(response.status, 200);
-                assert.isObject(response.data);
-                assert.containsAllKeys(response.data, [
-                    "firstname",
-                    "lastname",
-                    "totalprice",
-                    "depositpaid",
-                    "bookingdates",
-                    "additionalneeds",
-                ]);
-                assert.equal(response.data.firstname, book.UPDATE_BOOKING.firstname);
-                assert.equal(response.data.lastname, book.UPDATE_BOOKING.lastname);
-                assert.equal(response.data.depositpaid, book.UPDATE_BOOKING.depositpaid);
-                assert.equal(response.data.bookingdates.checkin, book.UPDATE_BOOKING.bookingdates.checkin);
-                assert.equal(response.data.bookingdates.checkout, book.UPDATE_BOOKING.bookingdates.checkout);
-                assert.equal(response.data.bookingdates.additionalneeds, book.UPDATE_BOOKING.bookingdates.additionalneeds);
-
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_ID_PARAMS);
             });
         });
 
@@ -422,19 +382,7 @@ describe("Booking", () => {
                     params
                 );
                 assert.equal(response.status, 200);
-                assert.isObject(response.data);
-                assert.containsAllKeys(response.data, [
-                    "firstname",
-                    "lastname",
-                    "totalprice",
-                    "depositpaid",
-                    "bookingdates",
-                    "additionalneeds",
-                ]);
-                assert.equal(
-                    response.data.firstname,
-                    book.PARTIAL_UPDATE_BOOKING.firstname
-                );
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_ID_PARAMS);
             });
 
             it("Partial Update booking data by lastname", async () => {
@@ -448,19 +396,7 @@ describe("Booking", () => {
                     params
                 );
                 assert.equal(response.status, 200);
-                assert.isObject(response.data);
-                assert.containsAllKeys(response.data, [
-                    "firstname",
-                    "lastname",
-                    "totalprice",
-                    "depositpaid",
-                    "bookingdates",
-                    "additionalneeds",
-                ]);
-                assert.equal(
-                    response.data.lastname,
-                    book.PARTIAL_UPDATE_BOOKING.lastname
-                );
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_ID_PARAMS);
             });
 
             it("Partial Update booking data by totalprice", async () => {
@@ -474,19 +410,8 @@ describe("Booking", () => {
                     params
                 );
                 assert.equal(response.status, 200);
-                assert.isObject(response.data);
-                assert.containsAllKeys(response.data, [
-                    "firstname",
-                    "lastname",
-                    "totalprice",
-                    "depositpaid",
-                    "bookingdates",
-                    "additionalneeds",
-                ]);
-                assert.equal(
-                    response.data.totalprice,
-                    book.PARTIAL_UPDATE_BOOKING.totalprice
-                );
+                
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_ID_PARAMS);
             });
             it("Partial Update booking data by depositpaid", async () => {
                 const params = (({
@@ -499,19 +424,7 @@ describe("Booking", () => {
                     params
                 );
                 assert.equal(response.status, 200);
-                assert.isObject(response.data);
-                assert.containsAllKeys(response.data, [
-                    "firstname",
-                    "lastname",
-                    "totalprice",
-                    "depositpaid",
-                    "bookingdates",
-                    "additionalneeds",
-                ]);
-                assert.equal(
-                    response.data.depositpaid,
-                    book.PARTIAL_UPDATE_BOOKING.depositpaid
-                );
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_ID_PARAMS);
             });
 
             it("Partial Update booking data by bookingdates", async () => {
@@ -529,23 +442,7 @@ describe("Booking", () => {
                 );
                 // console.log(response.data)
                 assert.equal(response.status, 200);
-                assert.isObject(response.data);
-                assert.containsAllKeys(response.data, [
-                    "firstname",
-                    "lastname",
-                    "totalprice",
-                    "depositpaid",
-                    "bookingdates",
-                    "additionalneeds",
-                ]);
-                assert.equal(
-                    response.data.bookingdates.checkin,
-                    book.PARTIAL_UPDATE_BOOKING.checkin
-                );
-                assert.equal(
-                    response.data.bookingdates.checkout,
-                    book.PARTIAL_UPDATE_BOOKING.checkout
-                );
+                expect(response.data).to.be.jsonSchema(schema.VALID_GET_BOOKING_DATA_BY_ID_PARAMS);
             });
         });
 
@@ -556,6 +453,7 @@ describe("Booking", () => {
                     book.UPDATE_BOOKING
                 );
                 assert.equal(response.status, 403);
+                assert.isString(response.data);
                 assert.equal(response.data, "Forbidden");
             });
 
@@ -565,6 +463,7 @@ describe("Booking", () => {
                     book.UPDATE_BOOKING
                 );
                 assert.equal(response.status, 405);
+                assert.isString(response.data);
                 assert.equal(response.data, "Method Not Allowed");
             });
         })
@@ -585,6 +484,7 @@ describe("Booking", () => {
                     bookingIdNew
                 );
                 assert.equal(response.status, 403);
+                assert.isString(response.data);
                 assert.equal(response.data, "Forbidden");
             });
             it("Delete booking data using unregistered id", async () => {
