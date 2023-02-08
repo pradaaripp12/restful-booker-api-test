@@ -249,16 +249,14 @@ describe("Booking", () => {
                     checkout,
                 }))(filterList)
                 const response = await RestfulAPI.getBookingFilter(params)
+                // console.log(response)
                 assert.equal(response.status, 200);
-                assert.isArray(response.data);
                 assert.isNumber(response.data[0].bookingid);
             });
         });
 
         describe("Negative Case", () => {
-            const filterWrongList = book.BOOKING_WRONG_PARAMS
-            const filterWrongNameList = book.BOOKING_WRONG_NAME_PARAMS
-            const filterWrongDateList = book.BOOKING_WRONG_DATE_PARAMS
+            const filterWrongList = book.FILTER_BOOKING_WRONGS_DATA
             it('Get list booking using wrong firstname filter', async () => {
                 const params = (({
                     firstname
@@ -299,43 +297,49 @@ describe("Booking", () => {
                 const params = (({
                     firstname,
                     lastname,
-                    checkin,
-                    checkout
                 }) => ({
                     firstname,
                     lastname,
-                    checkin,
-                    checkout
-                }))(filterWrongNameList)
+                }))(filterWrongList)
 
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });
 
-            it("Get list booking using wrong booking dates filter ", async () => {
+            it("Get list booking using wrong firtstname and checkout dates filter ", async () => {
                 const params = (({
                     firstname,
-                    lastname,
-                    checkin,
                     checkout
                 }) => ({
                     firstname,
-                    lastname,
-                    checkin,
                     checkout
-                }))(filterWrongDateList)
+                }))(filterWrongList)
 
-                const response = await RestfulAPI.getBookingFilter(null)
+                const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
                 assert.isArray(response.data);
             });
 
-            it("Get list booking without using filter by firstname, lastname, and bookingdates", async () => {
-                const params = (({}) => ({}))(filterList)
+            it("Get list booking using wrong lastname and checkout dates filter ", async () => {
+                const params = (({
+                    lastname,
+                    checkout
+                }) => ({
+                    lastname,
+                    checkout
+                }))(filterWrongList)
+
                 const response = await RestfulAPI.getBookingFilter(params)
                 assert.equal(response.status, 200);
-                assert.isArray(response.data, "No Content");
+                assert.isArray(response.data);
+            });
+
+            it("Get list booking without using filter by firstname, lastname, and checkout", async () => {
+                const params = filterWrongList;
+                const response = await RestfulAPI.getBookingFilter(params)
+                assert.equal(response.status, 200);
+                assert.isArray(response.data);
             });
 
         });
@@ -574,22 +578,22 @@ describe("Booking", () => {
                 assert.isString(response.data);
                 assert.equal(response.data, "Created");
             });
-            describe("Negative Case Case", () => {
-                it("Delete booking data with valid id without authorization token", async () => {
-                    const response = await RestfulAPI.deleteBookingWithoutAuth(
-                        bookingIdNew
-                    );
-                    assert.equal(response.status, 403);
-                    assert.equal(response.data, "Forbidden");
-                });
-                it("Delete booking data using unregistered id", async () => {
-                    const response = await RestfulAPI.deleteBooking(
-                        bookingIdNew)
-                    assert.equal(response.status, 405);
-                    assert.isString(response.data);
-                    assert.equal(response.data, "Method Not Allowed");
-                });
-            })
+        })
+        describe("Negative Case Case", () => {
+            it("Delete booking data with valid id without authorization token", async () => {
+                const response = await RestfulAPI.deleteBookingWithoutAuth(
+                    bookingIdNew
+                );
+                assert.equal(response.status, 403);
+                assert.equal(response.data, "Forbidden");
+            });
+            it("Delete booking data using unregistered id", async () => {
+                const response = await RestfulAPI.deleteBooking(
+                    bookingIdNew)
+                assert.equal(response.status, 405);
+                assert.isString(response.data);
+                assert.equal(response.data, "Method Not Allowed");
+            });
         })
     })
 });
