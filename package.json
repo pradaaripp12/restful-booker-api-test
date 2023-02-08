@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "API automation testing using mocha n chai",
   "main": "index.js",
-  "author": "pradaaripp12",
+  "author": "Wafa",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.3.1",
@@ -23,5 +23,6 @@
   "_moduleAliases": {
     "$root": "tests",
     "$helper": "tests/helper"
-  }
+  },
+  "repository": "https://github.com/pradaaripp12/restful-booker-api-test.git"
 }
